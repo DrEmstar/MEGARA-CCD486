@@ -1,0 +1,20 @@
+%to install just copy directory as is and then run thefollowing commands
+%if you don't have access to g77 then fint someway since gfotran and gcc (new versions)
+%do not seem to work ...
+
+%g77 -fno-automatic -O3 -o synspec s48m.f
+%g77 -fno-automatic -O3 -o rmod rmod.f
+%g77 -fno-automatic -O3 -o rotin3 rotin3.f
+
+% NOW THEY DO!! just changed one line (an open file line changing NAME to FILE)
+%so now you can do this!
+
+gfortran -fno-automatic -O3 -o synspec s48m.f
+gfortran -fno-automatic -O3 -o rmod rmod.f
+gfortran -fno-automatic -O3 -o rotin3 rotin3.f
+
+%%Also need to update fortran symbolic links on 64bit ubuntu (at least):
+
+sudo ln -sf /usr/lib64/libgfortran.so.3.0.0 /usr/local/MATLAB/R2011a/sys/os/glnxa64/libgfortran.so.3
+
+

@@ -1,0 +1,8 @@
+%making synthetic spectra:
+start by setting the file 'new' to the teff and log g you want then set the mod.55 file to cover the wavelength and spectrum type you want (see the manual for options) then run 'rmod' at the prompt (no inputs) next run
+KSynspec output mod gf3000
+
+%rotational and instrumental broadening
+rotin3 < r.dat
+
+%plotting

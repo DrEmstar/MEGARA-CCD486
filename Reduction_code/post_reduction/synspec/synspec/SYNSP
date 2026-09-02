@@ -1,0 +1,63 @@
+#
+# UV spectrum: 900-3200A
+#
+ln -sf /home/lanz/linelist/gfFUSTIS99.dat fort.19
+ln -sf /home/lanz/synspec48/lyman fort.20
+ln -sf /home/lanz/synspec45/he2prf.dat fort.24
+#
+echo "       0      35       0" > fort.55
+echo "       1       0       0       1" >> fort.55
+echo "       1       0       0       0       0" >> fort.55
+echo "       1       1       0       0       1" >> fort.55
+echo "       20      0      24" >> fort.55
+echo "     900    3200      80       0   1.e-5        0.01" >> fort.55
+echo "       0" >> fort.55
+echo "       2.0" >> fort.55
+echo "ND=50,VTB=2." > nst
+#/bin/cp -f feB.13 fort.13
+/bin/rm -f $1.uv.6
+#
+/bin/cp -f ../$1.7 fort.8
+/home/lanz/synspec48/s48m < ../$1.5 > $1.uv.6
+#rotin3 < r.tmp
+/bin/mv -f fort.7 $1.uv.7
+/bin/mv -f fort.17 $1.uv.17
+#/bin/mv -f fort.12 $1.uv.12
+#/bin/mv -f fort.11 $1.uv.11
+#
+/bin/rm -f fort.19 fort.20 fort.21 fort.23 fort.24 fort.55 nst fort.12
+/bin/rm -f fort.8 fort.14 fort.15 fort.16 fort.84 fort.95 fort.13
+#gzip $1.uv.6 $1.uv.7 $1.uv.17
+#
+# Visible spectrum: 3000-7500A
+#
+ln -sf /home/lanz/linelist/gfVIS99.dat fort.19
+ln -sf /home/lanz/synspec48/lyman fort.20
+ln -sf /home/lanz/synspec48/balmer fort.21
+ln -sf /home/lanz/synspec45/he1prf.dat fort.23
+ln -sf /home/lanz/synspec45/he2prf.dat fort.24
+#
+echo "       0      35       0" > fort.55
+echo "       1       0       0       1" >> fort.55
+echo "       1       0       0       0       0" >> fort.55
+echo "       1       1       0       0       1" >> fort.55
+echo "       2021   23      24" >> fort.55
+echo "    3000    7500      80       0   1.e-5        0.025" >> fort.55
+echo "       0" >> fort.55
+echo "       2.0" >> fort.55
+echo "ND=50,VTB=2." > nst
+#/bin/cp -f feB.13 fort.13
+/bin/rm -f $1.vis.6
+#
+/bin/cp -f ../$1.7 fort.8
+/home/lanz/synspec48/s48m < ../$1.5 > $1.vis.6
+#rotin3 < r.tmp
+/bin/mv -f fort.7 $1.vis.7
+/bin/mv -f fort.17 $1.vis.17
+#/bin/mv -f fort.12 $1.vis.12
+#/bin/mv -f fort.11 $1.vis.11
+#
+/bin/rm -f fort.19 fort.20 fort.21 fort.23 fort.24 fort.55 nst fort.12
+/bin/rm -f fort.8 fort.14 fort.15 fort.16 fort.84 fort.95 fort.13 fort.69
+#gzip $1.vis.6 $1.vis.7 $1.vis.17
+#

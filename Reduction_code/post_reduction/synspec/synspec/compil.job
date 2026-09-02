@@ -1,0 +1,7 @@
+#PBS -j oe
+#PBS -o /home/fremat/plato/synspec/s48/compil.out
+#PBS -l walltime=0:10:00,ncpus=1
+
+cd /home/fremat/plato/synspec/s48
+
+g77 -fno-automatic -O3 -o synspec s48m.f

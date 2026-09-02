@@ -1,0 +1,97 @@
+MEGARA 2.1 INSTALLATION
+=======================
+
+MEGARA requires MATLAB, SynSpec and SUPPNet. These instructions assume
+macOS or Linux and that Git, Conda and a Fortran compiler are available.
+
+
+1. MATLAB PATH
+--------------
+
+Add the complete Version_2_1 folder and all its subfolders to the MATLAB
+path. Then follow README.txt to configure the raw- and reduced-data pointer
+files.
+
+IMPORTANT: Do not put raw or reduced data folders inside the MEGARA
+Version_2_1 folder. Keep the program and data in separate locations, for
+example:
+
+MEGARA/Version_2_1/       program files only
+Astronomy_Data/Raw_Data/  raw FITS files
+Astronomy_Data/Reduced_Data/  reduction outputs
+
+Place pointer_raw_data_directory.m in the raw-data root and
+pointer_reduced_data_directory.m in the reduced-data root. Add those two
+root directories to the MATLAB path. Keeping data outside Version_2_1
+prevents observations and reductions from being copied, overwritten or
+deleted when MEGARA is updated or replaced.
+
+
+2. SYNSPEC
+----------
+
+The SynSpec source code, atmosphere models and line data are supplied with
+MEGARA in:
+
+Reduction_code/post_reduction/synspec/synspec
+
+Install gfortran, open a terminal in that directory, and compile:
+
+gfortran -fno-automatic -O3 -o synspec s48m.f
+gfortran -fno-automatic -O3 -o rmod rmod.f
+gfortran -fno-automatic -O3 -o rotin3 rotin3.f
+chmod +x synspec rmod rotin3 KSynspec
+
+The executables must remain in this directory. The included
+synspec_pointer.m lets MEGARA locate it when the full Version_2_1 tree is
+on the MATLAB path.
+
+Check the installation in MATLAB:
+
+which synspec_pointer
+[wave,intensity] = make_synth_spectrum(7250,4.0,20,0.05,5000,5100);
+plot(wave,intensity)
+
+The SynSpec directory must be writable because temporary input and output
+files are created there during a run.
+
+
+3. SUPPNET
+----------
+
+Download SUPPNet and create its Conda environment:
+
+git clone https://github.com/RozanskiT/suppnet.git
+cd suppnet
+conda env create -n suppnet-ktwo -f environment.yml
+
+Test it from the terminal:
+
+conda run -n suppnet-ktwo python /full/path/to/suppnet/suppnet.py --help
+
+Open this MEGARA file:
+
+Reduction_code/post_reduction/run_suppnet_spectrum.m
+
+Near the end of parse_suppnet_options, replace the default values of:
+
+suppnet_script    with the full path to suppnet.py
+conda_executable  with the full path reported by: which conda
+
+Leave conda_environment set to suppnet-ktwo unless a different environment
+name was used during installation.
+
+SUPPNet is used when options.automatic_continuum_fit=true. The template or
+manual continuum modes do not run SUPPNet.
+
+
+4. FINAL CHECK
+--------------
+
+Restart MATLAB, add the complete Version_2_1 tree to the path, and confirm:
+
+which Run_megara
+which synspec_pointer
+which run_suppnet_spectrum
+
+All three commands should return paths inside the intended installations.

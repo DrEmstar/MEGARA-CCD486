@@ -1,0 +1,53 @@
+JOBID=$1
+MODEL=$2
+LINES=$3
+
+				# announce the program	
+
+echo '  '
+echo ' S Y N S P E C '
+echo '  '
+echo ' Model atmosphere watch 86' $MODEL
+echo ' Line list        ' $LINES
+echo ' Job input files  ' $JOBID
+echo '  '
+
+				# collect the job-specific input
+
+ln -s $MODEL.7 fort.8           # copy the model atmosphere
+ln -s $MODEL.55 fort.55         # copy the corresponding input file 55
+ln -s $LINES fort.19            # copy the linelist
+
+				# soft links for data files
+
+ln -s ./brf/hydprf.cs fort.23
+ln -s ./brf/hydprf.dat.ori fort.27
+ln -s ./brf/hyd.esw fort.28
+ln -s ./brf/he1prf.dat fort.24
+ln -s ./brf/he4471.dat fort.25
+ln -s ./brf/he2prf.dat fort.26
+ln -s ./brf/balmer fort.87
+ln -s ./brf/pasch fort.88
+ln -s ./brf/hydprf.esw fort.22
+
+
+				# run synspec
+
+./synspec <$MODEL.5 >$JOBID.6
+
+				# store output files
+
+cp fort.7  $JOBID.7		# emergent flux
+cp fort.6  $JOBID.6		# emergent flux
+cp fort.17 $JOBID.17		# emergent flux (in the continuum only)
+cp fort.16 $JOBID.16		# partial equivalent widths
+cp fort.12 $JOBID.12		# identification table 
+cp fort.69 $JOBID.69		# elapsed time
+cp fort.18 $JOBID.18		# continuum specific intensities
+cp fort.10 $JOBID.10		# continuum specific intensities
+cp fort.86 $JOBID.86		# continuum specific intensities
+
+				# tidy up
+cp fort.99 f99
+#rm fort.*
+mv f99 fort.99

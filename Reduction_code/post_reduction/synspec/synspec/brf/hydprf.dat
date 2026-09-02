@@ -1,0 +1,13 @@
+********************************************************************************
+   STARK BROADENING TABLES (UNIFIED THEORY) FOR HI INCLUDING CONVOLUTION WITH   
+                           A THERMAL DOPPLER PROFILE                            
+                NORMALIZED STANDARD PROFILE S IN FREQUENCY UNITS                
+                    CALCULATED BY T. SCHOENING AND K. BUTLER                    
+                                                                                
+  HISTORY                                                                       
+                                                                                
+  16-mar-89  v1.0                                                               
+  26-jul-95  v2.0  higher densities (log N = 18) included                   
+                   gaps in the data are flagged with a log S value of -99.999   
+********************************************************************************
+ HI        H1        H2        0

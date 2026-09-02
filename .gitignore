@@ -1,0 +1,6 @@
+.DS_Store
+**/.DS_Store
+**/megara_last_run_config.mat
+Reduction_code/post_reduction/synspec/tmp/
+Pointer_files/Observation Summaries/
+Pointer_files/hd_*/
