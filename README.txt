@@ -21,6 +21,13 @@ User_codes/Run_megara.m
 
 Set `options.objectname` and review the options in that file before running. For an existing reduction, set `options.skip_reduction=true` to run post-reduction only.
 
+## Stellar extraction alignment
+
+New reductions align the stellar extraction to the science frame relative to its
+monthly master flat. The measured offset and fallback diagnostics are saved with
+each exposure. See `TRACE_REGISTRATION.md` for the method, off switch, instructions
+for re-reducing existing data, validation and wavelength/profile limitations.
+
 ## Main outputs
 
 Outputs are stored in `Reduced_Data/<target>/`:

@@ -77,6 +77,7 @@ plotting=0; % 0 for no, 1 for yes flat field cosmic ray filtering plotting (defa
 flatdata_medfilt=1; % amount of median smoothing on flat-field data (former default=30, now set to 1 to remove chip artefacts)
 backdata_medfilt=50; % amount of mean smoothing on stellar and flat-field background data (default=50)
 cosmic_plotting=0; % whether to plot the cosmic ray filtering process for stellar images (default=0)
+stellar_trace_registration_enabled=true; % false restores fixed monthly-master extraction
 number_bad_thorium=0; %number of thorium files with less than 900 lines found
 
 %2 process the flat-fields by summing all flats, order-tracing and background fitting
@@ -88,6 +89,9 @@ if save_flag_flat_field==1
     cd(reduction_directory)
     save(flat_cache_file,'allorders','flatdata','backdata','summed_flat','backfit')
 end
+
+%Runtime option: do not persist this switch in the monthly flat cache.
+allorders.stellar_trace_registration_enabled=stellar_trace_registration_enabled;
 
 %3- The following will process all the thar images taken that night
 cd(reduction_directory)

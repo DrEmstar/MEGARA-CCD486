@@ -27,13 +27,11 @@ data=blue_data_chop(data,blue_data_chop_value);
 %Fit stellar background
 backfit=fit_background(data,allorders);
 
-%Extract stellar and background orders
-stardata=extract_all_orders_no_background(allorders,data);
-backdata=extract_all_orders_no_background(allorders,backfit);
-
-%cosmic ray filtering
-stardata.numords=allorders.numords;
-stardata=remove_cosmics(stardata,cosmic_plotting);
+%Register science extraction to this exposure's monthly flat profile.
+[stardata,backdata,trace_registration]=extract_registered_stellar_orders( ...
+    allorders,data,backfit,flatdata,cosmic_plotting);
+processing_data.trace_registration=trace_registration;
+reduced_spectrum_data.trace_registration=trace_registration;
 
 %Apply flat-profile weighted extraction
 [stardata,backdata]=apply_flat_profile_weighted_extraction(stardata,backdata,flatdata,backdata_medfilt);
