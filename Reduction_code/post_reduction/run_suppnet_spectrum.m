@@ -114,8 +114,8 @@ addParameter(input_parser,'quiet',true);              % add --quiet flag
 addParameter(input_parser,'skip',0);                  % SUPPNET --skip parameter (0 => omit)
 addParameter(input_parser,'extra_arguments',"");      % extra CLI args as a string, e.g. "--something 3"
 addParameter(input_parser,'extraArgs',"");            % legacy extra CLI args
-addParameter(input_parser,'suppnet_script',"/full/path/to/suppnet/suppnet.py"); % configure during installation
-addParameter(input_parser,'conda_executable',"/full/path/to/conda");             % configure during installation
+addParameter(input_parser,'suppnet_script',"/Users/ejb555/Documents/suppnet/suppnet.py");  % adjust if needed
+addParameter(input_parser,'conda_executable',"/opt/anaconda3/bin/conda");                   % adjust if needed
 parse(input_parser,varargin{:});
 
 %Store parsed options

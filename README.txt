@@ -1,15 +1,18 @@
-# MEGARA 2.1
+# MEGARA 2.2
 
 MEGARA is a MATLAB pipeline for reducing and post-processing HERCULES echelle spectra taken on the CCD486.
 
 ## Setup
 
-1. Add the complete `Version_2_1` folder tree to the MATLAB path.
+1. Remove older MEGARA versions and their subfolders from the MATLAB path, then add the complete `Version_2_2` tree.
 2. Place `pointer_raw_data_directory.m` in the raw-data root directory.
 3. Place `pointer_reduced_data_directory.m` in the reduced-data root directory.
 4. Add both data root directories to the MATLAB path.
 
 MEGARA uses these pointer files to locate its input and output directories.
+
+Keep raw observations and reduced products outside the `Version_2_2` folder.
+Copy the bundled tutorial data to the raw-data root before running it.
 
 ## Running MEGARA
 
@@ -21,12 +24,10 @@ User_codes/Run_megara.m
 
 Set `options.objectname` and review the options in that file before running. For an existing reduction, set `options.skip_reduction=true` to run post-reduction only.
 
-## Stellar extraction alignment
-
-New reductions align the stellar extraction to the science frame relative to its
-monthly master flat. The measured offset and fallback diagnostics are saved with
-each exposure. See `TRACE_REGISTRATION.md` for the method, off switch, instructions
-for re-reducing existing data, validation and wavelength/profile limitations.
+MEGARA reuses its MATLAB process pool between observing folders. A two-folder
+CCD486 HD110379 check found identical February extracted and processing files
+with a reused pool and a fresh pool. That check used cached flat and ThAr
+calibrations; a calibration-rebuild transition has not been tested yet.
 
 ## Main outputs
 
@@ -42,6 +43,10 @@ Outputs are stored in `Reduced_Data/<target>/`:
   and other supporting information.
 - Optional ASCII, FITS, and FAMIAS products.
 
+New final-data files contain a variable named `final_data`. Readers also accept
+the older `finaldata` variable. An existing file is left intact if writing its
+replacement fails.
+
 The wavelength columns in `J*.mat` are not barycentrically shifted. The correction is stored as `bcorr` and is applied during post-reduction when `options.apply_barycentric_correction=true`.
 
 The barycentric correction is calculated entirely in MATLAB using the
@@ -55,14 +60,16 @@ parallax, proper motion or radial velocity.
 - `User_codes/` — run scripts and target databases.
 - `Pointer_files/` — templates for the raw- and reduced-data pointer files.
 - `Reduction_code/` — main pipeline.
-- `Deicoon/` — LSD resources.
 - `Other_useful_code/` — supplementary tools and diagnostics.
 
-The full `MEGARA 2.1 Manual.pdf` is included in the repository root.
+The bundled `MEGARA 2.2 Manual.pdf` retains the MEGARA 2.1 technical content;
+its cover version and abstract have been updated to 2.2. The installation
+instructions in this package describe 2.2-specific setup.
 
-## Release contents
+## Stellar extraction
 
-This branch is the CCD486 MEGARA 2.1 release. It is maintained in parallel
-with the existing MEGARA 1.6 Mac and Unix branches; those legacy branches are
-unchanged. The bundled `tutorial_data` directory contains the HD 48501 files
-used by the tutorial in the manual.
+New reductions register each stellar frame's extraction to its monthly master
+flat. This requires re-reducing the raw stellar frames; post-reduction alone
+does not change an existing extraction. The per-frame `trace_registration`
+diagnostic is saved in each reduced frame.
+

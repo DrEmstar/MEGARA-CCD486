@@ -66,20 +66,6 @@ for file_info_index=1:numel(info.list)
 
 end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TEMP TEST LIMIT - UNCOMMENT ONLY WHILE DEBUGGING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%max_test_stellar_frames=3;
-%stellar_idx=stellar_idx(1:min(max_test_stellar_frames,numel(stellar_idx)));
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TEMP SINGLE-FILE TEST - UNCOMMENT ONLY WHILE DEBUGGING
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%test_stellar_file='J7850018';
-%stellar_idx=stellar_idx(strcmp(info.list(stellar_idx),test_stellar_file));
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %Count stellar frames
 nstellar=numel(stellar_idx);
 fprintf('Found %d stellar frames to reduce\n',nstellar)
@@ -97,7 +83,7 @@ if numel(jd_ths)<1
     error('At least one ThAr calibration is required for stellar processing.')
 end
 
-%Process stellar frames in a fresh pool for this raw folder
+%Process stellar frames with workers configured for this raw folder
 process_stellar_indices_in_parallel(stellar_idx,info,allorders,flatdata,jd_ths,fwave,blue_data_chop_value,flatdata_medfilt,backdata_medfilt,cosmic_plotting,reduction_directory)
 
 end
@@ -169,12 +155,11 @@ if number_stellar_files==1
     return
 end
 
-%Restart the process pool for this raw folder
+%Reuse the process pool across raw folders; refresh folder-specific state below.
 parallel_cluster=parcluster('Processes');
 number_parallel_workers=max(1,min(number_stellar_files, ...
     parallel_cluster.NumWorkers-1));
-pool_object=restart_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers);
-pool_cleanup=onCleanup(@() delete(pool_object));
+configure_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers);
 
 %Broadcast large read-only variables once per worker
 info_constant=parallel.pool.Constant(info);
@@ -238,17 +223,20 @@ stellar_frame_processing(stellar_display_name,info,allorders,flatdata,fwave1,fwa
 
 end
 
-function pool_object=restart_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers)
+function pool_object=configure_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers)
 
-%Restart the process pool so workers do not retain state from a previous raw folder
+%Keep an existing process pool; the calibration constants are new for each
+%raw folder and the worker folder/path are refreshed below.
 existing_pool=gcp('nocreate');
-
-if ~isempty(existing_pool)
+if isempty(existing_pool)
+    pool_object=parpool('Processes',number_parallel_workers);
+elseif ~isa(existing_pool,'parallel.ProcessPool') || ...
+        existing_pool.NumWorkers<number_parallel_workers
     delete(existing_pool)
+    pool_object=parpool('Processes',number_parallel_workers);
+else
+    pool_object=existing_pool;
 end
-
-%Use the requested worker count
-pool_object=parpool('Processes',number_parallel_workers);
 
 %Process workers do not always inherit subfolders added to the client path
 %after MATLAB starts. Add the bundled barycentric implementation explicitly

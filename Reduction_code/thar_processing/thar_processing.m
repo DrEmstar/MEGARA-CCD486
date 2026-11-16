@@ -161,7 +161,7 @@ end
 
 function [jd_ths_t,m_t,fwave_t,numbad_thar_list,info_rebuild_list,quality_control_t]=process_thorium_indices_in_parallel(thorium_info_indices,info,allorders,Bias,flatdata,blue_data_chop_value,minimum_kept_lines,reduction_directory)
 
-%Process ThAr frames in parallel using a fresh pool for this raw folder
+%Process ThAr frames with workers configured for this raw folder
 number_thorium_files=numel(thorium_info_indices);
 
 jd_ths_t=nan(1,number_thorium_files);
@@ -181,13 +181,11 @@ for thorium_index=1:number_thorium_files
     thar_file_paths{thorium_index}=fullfile(reduction_directory,thar_display_names{thorium_index});
 end
 
-%Restart the process pool for this raw folder.
-%This avoids stale worker folder/path state after the pipeline changes month.
+%Reuse the process pool across raw folders; refresh folder-specific state below.
 parallel_cluster=parcluster('Processes');
 number_parallel_workers=max(1,min(number_thorium_files, ...
     parallel_cluster.NumWorkers-1));
-pool_object=restart_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers);
-pool_cleanup=onCleanup(@() delete(pool_object));
+configure_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers);
 
 %Broadcast large read-only variables once per worker
 info_constant=parallel.pool.Constant(info);
@@ -270,17 +268,19 @@ end
 
 end
 
-function pool_object=restart_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers)
+function pool_object=configure_parallel_pool_for_reduction_folder(reduction_directory,number_parallel_workers)
 
-%Restart the process pool so workers do not retain state from a previous raw folder
+%Calibration constants are new for each raw folder; refresh worker state below.
 existing_pool=gcp('nocreate');
-
-if ~isempty(existing_pool)
+if isempty(existing_pool)
+    pool_object=parpool('Processes',number_parallel_workers);
+elseif ~isa(existing_pool,'parallel.ProcessPool') || ...
+        existing_pool.NumWorkers<number_parallel_workers
     delete(existing_pool)
+    pool_object=parpool('Processes',number_parallel_workers);
+else
+    pool_object=existing_pool;
 end
-
-%Use the requested worker count
-pool_object=parpool('Processes',number_parallel_workers);
 
 %Set worker folders explicitly
 folder_futures=parfevalOnAll(@cd,0,reduction_directory);

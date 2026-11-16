@@ -34,11 +34,14 @@ reduced_frames_directory=fullfile(target_directory,'reduced frames');
 supplementary_directory=fullfile(target_directory,'supplementary_data');
 
 final_file=find_final_data_file(target_directory,config.objectname);
-loaded_final=load(final_file,'finaldata');
-if ~isfield(loaded_final,'finaldata')
-    error(['The final-data file does not contain finaldata: ' final_file])
+loaded_final=load(final_file,'final_data','finaldata');
+if isfield(loaded_final,'final_data')
+    finaldata=loaded_final.final_data;
+elseif isfield(loaded_final,'finaldata')
+    finaldata=loaded_final.finaldata;
+else
+    error(['The final-data file contains neither final_data nor finaldata: ' final_file])
 end
-finaldata=loaded_final.finaldata;
 continuum_metadata=finaldata;
 diagnostics_file=fullfile(supplementary_directory, ...
     ['diagnostics_' config.objectname '.mat']);

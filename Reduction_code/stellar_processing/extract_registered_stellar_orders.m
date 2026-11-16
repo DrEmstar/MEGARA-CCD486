@@ -46,6 +46,4 @@ for j=1:allorders.numords
         star.cosmic_count=star.cosmic_count+nnz(star.(field).cosmics);
     end
 end
-fprintf('Stellar trace registration: %s, shift %.3f pixels (%d orders).\n', ...
-    diagnostic.status,diagnostic.applied_shift_pixels,nnz(diagnostic.accepted_orders));
 end

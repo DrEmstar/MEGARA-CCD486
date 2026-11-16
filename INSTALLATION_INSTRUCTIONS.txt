@@ -1,4 +1,4 @@
-MEGARA 2.1 INSTALLATION
+MEGARA 2.2 INSTALLATION
 =======================
 
 MEGARA requires MATLAB, SynSpec and SUPPNet. These instructions assume
@@ -8,21 +8,22 @@ macOS or Linux and that Git, Conda and a Fortran compiler are available.
 1. MATLAB PATH
 --------------
 
-Add the complete Version_2_1 folder and all its subfolders to the MATLAB
+Add the complete Version_2_2 folder and all its subfolders to the MATLAB
 path. Then follow README.txt to configure the raw- and reduced-data pointer
 files.
+Remove older MEGARA versions and their subfolders from the MATLAB path first.
 
 IMPORTANT: Do not put raw or reduced data folders inside the MEGARA
-Version_2_1 folder. Keep the program and data in separate locations, for
+Version_2_2 folder. Keep the program and data in separate locations, for
 example:
 
-MEGARA/Version_2_1/       program files only
+MEGARA/Version_2_2/       program files only
 Astronomy_Data/Raw_Data/  raw FITS files
 Astronomy_Data/Reduced_Data/  reduction outputs
 
 Place pointer_raw_data_directory.m in the raw-data root and
 pointer_reduced_data_directory.m in the reduced-data root. Add those two
-root directories to the MATLAB path. Keeping data outside Version_2_1
+root directories to the MATLAB path. Keeping data outside Version_2_2
 prevents observations and reductions from being copied, overwritten or
 deleted when MEGARA is updated or replaced.
 
@@ -43,7 +44,7 @@ gfortran -fno-automatic -O3 -o rotin3 rotin3.f
 chmod +x synspec rmod rotin3 KSynspec
 
 The executables must remain in this directory. The included
-synspec_pointer.m lets MEGARA locate it when the full Version_2_1 tree is
+synspec_pointer.m lets MEGARA locate it when the full Version_2_2 tree is
 on the MATLAB path.
 
 Check the installation in MATLAB:
@@ -88,10 +89,17 @@ manual continuum modes do not run SUPPNet.
 4. FINAL CHECK
 --------------
 
-Restart MATLAB, add the complete Version_2_1 tree to the path, and confirm:
+Restart MATLAB, add the complete Version_2_2 tree to the path, and confirm:
 
 which Run_megara
+which stellar_processing
+which post_reduction
 which synspec_pointer
 which run_suppnet_spectrum
+which pointer_raw_data_directory
+which pointer_reduced_data_directory
 
-All three commands should return paths inside the intended installations.
+The MEGARA functions should resolve inside Version_2_2. The raw and reduced
+data pointer files should resolve inside their respective data roots. Run the
+bundled tutorial only from a copy placed in the raw-data root; MEGARA writes
+calibration and classification files into the observing-run directory.

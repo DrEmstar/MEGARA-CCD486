@@ -1,4 +1,4 @@
-MEGARA 2.1 tutorial data
+MEGARA 2.2 tutorial data
 
 This folder contains the raw FITS frames for the HD 48501 tutorial described
 in Appendix A of the MEGARA 2.1 manual.
@@ -15,4 +15,4 @@ copy in your raw-data root instead.
 
 Only original raw FITS frames are supplied. Cached calibration, classification
 and reduction products from earlier MEGARA versions have intentionally been
-excluded so that the tutorial exercises the MEGARA 2.1 workflow.
+excluded so that the tutorial exercises the MEGARA 2.2 workflow.

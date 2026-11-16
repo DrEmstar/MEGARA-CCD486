@@ -1,4 +1,4 @@
-%Welcome to MEGARA. This is Version 2.1
+%Welcome to MEGARA. This is Version 2.2
 
 clearvars
 clc
@@ -7,7 +7,7 @@ clc
 
 options=struct();
 
-options.objectname=['hd_48501'];
+options.objectname=['hd_135825'];
 
 %If objectname is empty then all stellar images are processed
 %to run all MARSDEN EXOCOMET stars use 'exocomet'
@@ -16,7 +16,7 @@ options.objectname=['hd_48501'];
 %to run a list of targets define a structure array, e.g. objectname.target1='hd_000001';objectname.target2='hd_000002'; ...
 
 %Months/Runs to reduce
-options.reduction_folders={['tutorial_data']};
+options.reduction_folders={};
 %A colon-separated cell array of the directory names to be reduced, e.g. reduction_folders={'Jan 2018'; 'Feb 2018'};
 %If reduction_folders is empty then all folders in the directory where pointer_raw_data_directory.m is located are reduced
 
@@ -25,18 +25,16 @@ options.teff=[]; %Effective temperature in Kelvin
 options.logg=[]; %Surface gravity as log10(g) in cgs units
 options.vsini=[]; %Projected rotational velocity in km/s
 
-% options.teff=8000; %Effective temperature in Kelvin
-% options.logg=4.0; %Surface gravity as log10(g) in cgs units
-% options.vsini=60; %Projected rotational velocity in km/s
+
 
 %USER OPTIONS%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Choose true for on and false for off.
 
-options.star_census=true; %Do you want to redo census of observations? (default true)
+options.star_census=false; %Do you want to redo census of observations? (default true)
 options.skip_reduction=false %Do you want to skip reduction? (default false)
 options.skip_post_reduction=false; %Do you want to skip processing and post-reduction? (default false)
-options.skip_manual_file_check=false; %Skip the Good/Bad interface and retain ambiguous files for unattended reductions (default false)
+options.skip_manual_file_check=true; %Skip the Good/Bad interface and retain ambiguous files for unattended reductions (default false)
 
 options.chunked_post_reduction=false; %Process already-reduced spectra internally in chunks. Recommended for large data sets.
 options.post_reduction_chunk_size=500; %Number of already-reduced spectra per post-reduction chunk.
@@ -64,7 +62,7 @@ options.suppress_figures=false; %Do you want to suppress figures during running 
 
 options.ascii_output=false; %Do you want your output files in ASCII format?
 options.fits_output=false; %Do you want your output files in FITS format?
-options.FAMIAS_output=false; %Do you want your regularised LSD profiles output ready to load for FAMIAS? Requires overwrite_post_reduction=true and calculate_lsd_profile=true.
+options.FAMIAS_output=true; %Do you want your regularised LSD profiles output ready to load for FAMIAS? Requires overwrite_post_reduction=true and calculate_lsd_profile=true.
 
 %MEGARA CODE%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -2,8 +2,14 @@ function extract_fullwave_fullint(matFileName, outputDir)
     % Load the MAT file
     data = load(matFileName);
 
-    % Extract the 'finaldata' structure
-    finaldata = data.finaldata;
+    % Accept both current and legacy MAT variable names.
+    if isfield(data,'final_data')
+        finaldata = data.final_data;
+    elseif isfield(data,'finaldata')
+        finaldata = data.finaldata;
+    else
+        error('Final-data file has neither final_data nor finaldata.');
+    end
 
     % Extract fullwave and fullint
     fullwave = finaldata.fullwave;          % Vector (1 x N)

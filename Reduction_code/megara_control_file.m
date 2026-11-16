@@ -484,7 +484,16 @@ else
     final_data_file_name=fullfile(reduced_target_directory,['final_data_unmerged_' single_objectname '.mat']);
 end
 
-save(final_data_file_name,'finaldata','-v7.3')
+%Use the same name for the saved MAT variable and the public output.
+%The readers still accept older files containing variable finaldata.
+final_data=finaldata;
+temporary_final_data_file=[tempname(reduced_target_directory) '.mat'];
+save(temporary_final_data_file,'final_data','-v7.3')
+[move_status,move_message]=movefile(temporary_final_data_file, ...
+    final_data_file_name,'f');
+if ~move_status
+    error('Could not replace final-data file after successful save: %s',move_message)
+end
 
 if isfield(finaldata,'regularised_lsd_profile')
     regularised_lsd_profile=finaldata.regularised_lsd_profile;

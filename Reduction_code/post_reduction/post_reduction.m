@@ -104,7 +104,13 @@ if numel(test1)==0 || (numel(test1)>0 && options.overwrite_full_data==1)
 else
     disp('previous final_data loaded')
     loaded_final_data=load(test1(1).name);
-    finaldata=get_loaded_variable(loaded_final_data,'finaldata');
+    if isfield(loaded_final_data,'final_data')
+        finaldata=loaded_final_data.final_data;
+    elseif isfield(loaded_final_data,'finaldata')
+        finaldata=loaded_final_data.finaldata;
+    else
+        error('Existing final-data file has neither final_data nor finaldata.')
+    end
     if isfield(finaldata,'fullwave'), fullwave=finaldata.fullwave; end
     if isfield(finaldata,'fullint'), fullint=finaldata.fullint; end
     if isfield(finaldata,'jd'), jd=finaldata.jd; else, jd=NaN; end
@@ -431,11 +437,14 @@ end
 save(fullfile(supplementary_directory,'post_reduction_cosmic_ray_cleanup.mat'), ...
     'cosmic_ray_cleanup_chunks','-v7.3')
 
+fprintf('Checking merged pixels after block assembly\n')
 [fullint,merged_pixel_cleanup.before_suppnet]= ...
     mask_nonphysical_merged_pixels(fullwave,fullint);
+fprintf('Checking isolated merged spikes\n')
 [fullint,merged_pixel_cleanup.positive_spikes_before_suppnet]= ...
     remove_isolated_merged_cosmic_ray_spikes(fullwave,fullint);
 
+fprintf('Checking merged-spectrum outliers\n')
 merged_reject=find_merged_spectrum_rejections(fullwave,fullint);
 
 if any(merged_reject)

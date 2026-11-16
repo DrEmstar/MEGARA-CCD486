@@ -236,6 +236,9 @@ if ~options.skip_post_reduction
             process_data_flag=should_process_final_data(finaldata,options,reduced_target_directory,objectname);
 
             if process_data_flag
+                %post_reduction reloads the saved product. Release this copy
+                %before that call to avoid holding two multi-GB spectra.
+                clear finaldata
                 finaldata=process_1_target(objectname,options,reduced_data_location,teff,logg,vsini);
             end
 
@@ -479,12 +482,14 @@ if isfile(final_data_file_name)
 
     loaded_final_data=load(final_data_file_name);
 
-    if isfield(loaded_final_data,'finaldata')
+    if isfield(loaded_final_data,'final_data')
+        finaldata=loaded_final_data.final_data;
+    elseif isfield(loaded_final_data,'finaldata')
         finaldata=loaded_final_data.finaldata;
     else
         loaded_variable_names=fieldnames(loaded_final_data);
         finaldata=loaded_final_data.(loaded_variable_names{1});
-        warning(['Could not find variable finaldata in ' final_data_file_name '. Using first variable in file instead.'])
+        warning(['Could not find variable final_data or finaldata in ' final_data_file_name '. Using first variable in file instead.'])
     end
 
 end
